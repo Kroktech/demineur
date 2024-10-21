@@ -329,7 +329,10 @@ struct Grid
 			return tabrand[row][col];
 		}
 		else
+		{
 			return tabrand[row][col];
+			
+		}
 
 
 
@@ -354,25 +357,36 @@ struct Grid
 	}
 	void show()
 	{
+		std::cout << "   ";
+		for (int col = 0; col < width; ++col)
+		{
+			std::string num_col = std::to_string(col+1);
+			std::cout << std::string(3 - num_col.length(), ' ') << num_col;
+		}
+		std::cout << std::endl;
+
 		for (int row = 0; row < height; ++row)
 		{
+			std::string num_row = std::to_string(row+1);
+			std::cout << std::string(3 - num_row.length(), ' ') << num_row;
 			for (int col = 0; col < width; ++col)
 			{
 				if (values[row][col] == hide)
-					std::cout << "*" << " ";
+					std::cout << "[" << "-" << "]" ;
 
 				else if (values[row][col] == reveal)
 				{
-					std::cout << whatisthecharhide(row, col) << " ";
+					std::cout << "["<< whatisthecharhide(row, col) << "]";
 
 				}
 
 				else if (values[row][col] == flag)
-					std::cout << "<" << " ";
+					std::cout << "[" << "<" << "]" ;
 				else
-					std::cout << "z" << " ";
+					std::cout << "[" << "z" << "]" ;
 			}
 			std::cout << std::endl;
+			
 		}
 
 		int hiddenCells = 0;
