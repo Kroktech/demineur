@@ -12,7 +12,7 @@ enum State
 };
 struct Grid
 {
-	Grid() : values(nullptr), width(-1), height(-1), tabrand(nullptr)
+	Grid() : values(nullptr), width(-1), height(-1), tabrand(nullptr), bomb(0)
 	{
 	}
 	~Grid()
@@ -38,7 +38,22 @@ struct Grid
 		std::cout << "choose the height : ";
 		std::cin >> height;
 		std::cout << std::endl;
+
+		std::cout << "choose the number of bomb : ";
+		std::cin >> bomb;
+		std::cout << std::endl;
+		if(bomb > (20 * width * height) / 100)
+			do
+			{
+				std::cout << "choose a valid number of bomb under 20% of case";
+				std::cout << std::endl;
+				std::cout << "choose the number of bomb : ";
+				std::cin >> bomb;
+				std::cout << std::endl;
+			}
+		while (bomb > (20 * width * height) / 100);
 		if (width < 2 || width < 2)
+		{
 			do
 			{
 				std::cout << "invalid size enter a size greater than 5 ";
@@ -52,6 +67,8 @@ struct Grid
 				std::cin >> height;
 				std::cout << std::endl;
 			} while (width < 2 || width < 2);
+		}
+		
 		create(width, height);
 		tableaualéatoire();
 
@@ -73,10 +90,11 @@ struct Grid
 	int width;
 	int height;
 	char** tabrand;
+	int bomb;
 	void tableaualéatoire()
 	{
 
-		int bomb = (20 * width * height) / 100;
+		
 
 
 		tabrand = new char* [height];
@@ -100,201 +118,201 @@ struct Grid
 			{
 				tabrand[row][col] = 'B';
 				bombPlaced++;
-
+				incrementSurroundingCase(row, col);
 			}
 		}
-		//placer les chiffres autour des bombes
-		for (int row = 0; row < height ; ++row)
-			for (int col = 0; col < width; ++col)
-			{
-				if (tabrand[row][col] == 'B')
-				{
-					tabrand[row][col] = 'B';
-				}
-				else
-				{
+		////placer les chiffres autour des bombes
+		//for (int row = 0; row < height; ++row)
+		//	for (int col = 0; col < width; ++col)
+		//	{
+		//		if (tabrand[row][col] == 'B')
+		//		{
+		//			tabrand[row][col] = 'B';
+		//		}
+		//		else
+		//		{
 
-					if (row != 0 && row != height - 1 && col != 0 && col != width - 1) // tout sauf les bordure
-					{
-						if (tabrand[row - 1][col - 1] == 'B')// case en hat a gauche
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//			if (row != 0 && row != height - 1 && col != 0 && col != width - 1) // tout sauf les bordure
+		//			{
+		//				if (tabrand[row - 1][col - 1] == 'B')// case en hat a gauche
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row - 1][col] == 'B')//case en haut au milieu
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row - 1][col] == 'B')//case en haut au milieu
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row - 1][col + 1] == 'B')// case en haut a droite
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row - 1][col + 1] == 'B')// case en haut a droite
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row + 1][col + 1] == 'B')// case en bas a droite
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row + 1][col + 1] == 'B')// case en bas a droite
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row + 1][col] == 'B')// case en bas au milieu
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row + 1][col] == 'B')// case en bas au milieu
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row + 1][col - 1] == 'B')// case en bas a gauche 
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row + 1][col - 1] == 'B')// case en bas a gauche 
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row][col - 1] == 'B')// case au millieu a droite
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row][col - 1] == 'B')// case au millieu a droite
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
-					}
-					else if (row == 0 && col == 0) // le coin en haut gauche
-					{
-						if (tabrand[row][col - 1] == 'B')// case au millieu a droite
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
+		//			}
+		//			else if (row == 0 && col == 0) // le coin en haut gauche
+		//			{
+		//				if (tabrand[row][col - 1] == 'B')// case au millieu a droite
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row + 1][col] == 'B')// case en bas au milieu
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row + 1][col] == 'B')// case en bas au milieu
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row + 1][col + 1] == 'B')// case en bas a droite
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
-					}
-					else if (row == 0 && col == width - 1) // le coin en haut a droite 
-					{
-						if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row + 1][col + 1] == 'B')// case en bas a droite
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
+		//			}
+		//			else if (row == 0 && col == width - 1) // le coin en haut a droite 
+		//			{
+		//				if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row + 1][col] == 'B')// case en bas au milieu
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row + 1][col] == 'B')// case en bas au milieu
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row + 1][col - 1] == 'B')// case en bas a gauche 
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
-					}
-					else if (row == height - 1 && col == 0) // le coin en bas a gauche
-					{
-						if (tabrand[row - 1][col] == 'B')//case en haut au milieu
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row + 1][col - 1] == 'B')// case en bas a gauche 
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
+		//			}
+		//			else if (row == height - 1 && col == 0) // le coin en bas a gauche
+		//			{
+		//				if (tabrand[row - 1][col] == 'B')//case en haut au milieu
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row - 1][col + 1] == 'B')// case en haut a droite
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row - 1][col + 1] == 'B')// case en haut a droite
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row][col - 1] == 'B')// case au millieu a droite
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
-					}
-					else if (row == height - 1 && col == width - 1) // le coin en bas a droite
-					{
-						if (tabrand[row - 1][col] == 'B')//case en haut au milieu
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row][col - 1] == 'B')// case au millieu a droite
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
+		//			}
+		//			else if (row == height - 1 && col == width - 1) // le coin en bas a droite
+		//			{
+		//				if (tabrand[row - 1][col] == 'B')//case en haut au milieu
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row - 1][col - 1] == 'B')// case en hat a gauche
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row - 1][col - 1] == 'B')// case en hat a gauche
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
-					}
-					else if (row == 0 && col != 0 && col != width - 1) //en haut 
-					{
-						if (tabrand[row + 1][col + 1] == 'B')// case en bas a droite
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
+		//			}
+		//			else if (row == 0 && col != 0 && col != width - 1) //en haut 
+		//			{
+		//				if (tabrand[row + 1][col + 1] == 'B')// case en bas a droite
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row + 1][col] == 'B')// case en bas au milieu
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row + 1][col] == 'B')// case en bas au milieu
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row + 1][col - 1] == 'B')// case en bas a gauche 
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row + 1][col - 1] == 'B')// case en bas a gauche 
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row][col - 1] == 'B')// case au millieu a droite
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row][col - 1] == 'B')// case au millieu a droite
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
-					}
-					else if (row == height - 1 && col != 0 && col != width - 1) //en bas
-					{
-						if (tabrand[row - 1][col - 1] == 'B')// case en hat a gauche
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
+		//			}
+		//			else if (row == height - 1 && col != 0 && col != width - 1) //en bas
+		//			{
+		//				if (tabrand[row - 1][col - 1] == 'B')// case en hat a gauche
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row - 1][col] == 'B')//case en haut au milieu
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row - 1][col] == 'B')//case en haut au milieu
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row - 1][col + 1] == 'B')// case en haut a droite
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row - 1][col + 1] == 'B')// case en haut a droite
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row][col - 1] == 'B')// case au millieu a droite
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row][col - 1] == 'B')// case au millieu a droite
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
-					}
-					else if (col == 0 && row != 0 && row != height - 1) // a gauche
-					{
-						if (tabrand[row - 1][col] == 'B')//case en haut au milieu
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
+		//			}
+		//			else if (col == 0 && row != 0 && row != height - 1) // a gauche
+		//			{
+		//				if (tabrand[row - 1][col] == 'B')//case en haut au milieu
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row - 1][col + 1] == 'B')// case en haut a droite
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row - 1][col + 1] == 'B')// case en haut a droite
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row + 1][col + 1] == 'B')// case en bas a droite
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row + 1][col + 1] == 'B')// case en bas a droite
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row + 1][col] == 'B')// case en bas au milieu
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row + 1][col] == 'B')// case en bas au milieu
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row][col - 1] == 'B')// case au millieu a droite
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
-					}
-					else if (col == width - 1 && row != 0 && row != height - 1) // a droite
-					{
-						if (tabrand[row - 1][col - 1] == 'B')// case en hat a gauche
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row][col - 1] == 'B')// case au millieu a droite
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
+		//			}
+		//			else if (col == width - 1 && row != 0 && row != height - 1) // a droite
+		//			{
+		//				if (tabrand[row - 1][col - 1] == 'B')// case en hat a gauche
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row - 1][col] == 'B')//case en haut au milieu
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row - 1][col] == 'B')//case en haut au milieu
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row + 1][col] == 'B')// case en bas au milieu
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row + 1][col] == 'B')// case en bas au milieu
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row + 1][col - 1] == 'B')// case en bas a gauche 
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
+		//				if (tabrand[row + 1][col - 1] == 'B')// case en bas a gauche 
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
 
-						if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
-							//tabrand[row][col]++;
-							tabrand[row][col] = tabrand[row][col] + 1;
-					}
-				}
+		//				if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
+		//					//tabrand[row][col]++;
+		//					tabrand[row][col] = tabrand[row][col] + 1;
+		//			}
+		//		}
 
-			}
+		//	}
 
 
 
@@ -312,6 +330,17 @@ struct Grid
 			}
 			std::cout << std::endl;
 		}*/
+	}
+	void incrementSurroundingCase(int bombrow, int bombcol)
+	{
+		for (int row = bombrow - 1; row <= bombrow+1; ++row)
+			for(int col=bombcol- 1 ; col <= bombcol+1; ++col)
+				if (row >= 0 && row < height && col >= 0 && col < width && tabrand[row][col] != 'B')
+				{
+					tabrand[row][col]++;
+				}
+
+		
 	}
 
 
@@ -331,7 +360,7 @@ struct Grid
 		else
 		{
 			return tabrand[row][col];
-			
+
 		}
 
 
@@ -360,33 +389,33 @@ struct Grid
 		std::cout << "   ";
 		for (int col = 0; col < width; ++col)
 		{
-			std::string num_col = std::to_string(col+1);
+			std::string num_col = std::to_string(col + 1);
 			std::cout << std::string(3 - num_col.length(), ' ') << num_col;
 		}
 		std::cout << std::endl;
 
 		for (int row = 0; row < height; ++row)
 		{
-			std::string num_row = std::to_string(row+1);
+			std::string num_row = std::to_string(row + 1);
 			std::cout << std::string(3 - num_row.length(), ' ') << num_row;
 			for (int col = 0; col < width; ++col)
 			{
 				if (values[row][col] == hide)
-					std::cout << "[" << "-" << "]" ;
+					std::cout << "[" << "-" << "]";
 
 				else if (values[row][col] == reveal)
 				{
-					std::cout << "["<< whatisthecharhide(row, col) << "]";
+					std::cout << "[" << whatisthecharhide(row, col) << "]";
 
 				}
 
 				else if (values[row][col] == flag)
-					std::cout << "[" << "<" << "]" ;
+					std::cout << "[" << "<" << "]";
 				else
-					std::cout << "[" << "z" << "]" ;
+					std::cout << "[" << "z" << "]";
 			}
 			std::cout << std::endl;
-			
+
 		}
 
 		int hiddenCells = 0;
@@ -400,7 +429,7 @@ struct Grid
 					++hiddenCells;
 				}
 			}
-		if (hiddenCells == (height * width) - ((20 * width * height) / 100))
+		if (hiddenCells == (height * width) -bomb)
 			haswinn();
 	}
 
@@ -429,7 +458,7 @@ struct Grid
 		int choice = 0;
 		std::cout << "which action  1: flag / 2 reveal : ";
 		std::cin >> choice;
-		
+
 		State** newValues = new State * [height];
 		for (int row = 0; row < height; ++row)
 			newValues[row] = new State[width];
