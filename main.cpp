@@ -39,24 +39,15 @@ struct Grid
 		std::cin >> height;
 		std::cout << std::endl;
 
-		std::cout << "choose the number of bomb : ";
-		std::cin >> bomb;
-		std::cout << std::endl;
-		if(bomb > (20 * width * height) / 100)
-			do
-			{
-				std::cout << "choose a valid number of bomb under 20% of case";
-				std::cout << std::endl;
-				std::cout << "choose the number of bomb : ";
-				std::cin >> bomb;
-				std::cout << std::endl;
-			}
-		while (bomb > (20 * width * height) / 100);
-		if (width < 2 || width < 2)
+		
+		
+		
+		//if grid too small
+		if (width < 3 || width < 3)
 		{
 			do
 			{
-				std::cout << "invalid size enter a size greater than 5 ";
+				std::cout << "invalid size enter a size greater than 3 ";
 				std::cout << std::endl;
 				std::cout << "choose the width : ";
 				std::cin >> width;
@@ -66,9 +57,23 @@ struct Grid
 				std::cout << "choose the height : ";
 				std::cin >> height;
 				std::cout << std::endl;
-			} while (width < 2 || width < 2);
+			} while (width < 3 || width < 3);
 		}
-		
+		std::cout << "choose the number of bomb : ";
+		std::cin >> bomb;
+		std::cout << std::endl;
+		// if too much bomb
+		if (bomb > (20 * width * height) / 100)
+			do
+			{
+				std::cout << "choose a valid number of bomb under 20% of case";
+				std::cout << std::endl;
+				std::cout << "choose the number of bomb : ";
+				std::cin >> bomb;
+				std::cout << std::endl;
+			} while (bomb > (20 * width * height) / 100);
+
+		//create the 2 grids 
 		create(width, height);
 		tableaualéatoire();
 
@@ -94,18 +99,18 @@ struct Grid
 	void tableaualéatoire()
 	{
 
-		
+
 
 
 		tabrand = new char* [height];
-		// creer une grille
+		// create the hiden grid
 		for (int row = 0; row < height; row++)
 			tabrand[row] = new char[width];
 
 		for (int row = 0; row < height; ++row)
 			for (int col = 0; col < width; ++col)
 				tabrand[row][col] = '0';
-		// gerer les bomb
+		// place the numbers and bombs
 		int bombPlaced = 0;
 		while (bombPlaced < bomb)
 		{
@@ -121,237 +126,24 @@ struct Grid
 				incrementSurroundingCase(row, col);
 			}
 		}
-		////placer les chiffres autour des bombes
-		//for (int row = 0; row < height; ++row)
-		//	for (int col = 0; col < width; ++col)
-		//	{
-		//		if (tabrand[row][col] == 'B')
-		//		{
-		//			tabrand[row][col] = 'B';
-		//		}
-		//		else
-		//		{
-
-		//			if (row != 0 && row != height - 1 && col != 0 && col != width - 1) // tout sauf les bordure
-		//			{
-		//				if (tabrand[row - 1][col - 1] == 'B')// case en hat a gauche
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row - 1][col] == 'B')//case en haut au milieu
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row - 1][col + 1] == 'B')// case en haut a droite
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row + 1][col + 1] == 'B')// case en bas a droite
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row + 1][col] == 'B')// case en bas au milieu
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row + 1][col - 1] == 'B')// case en bas a gauche 
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row][col - 1] == 'B')// case au millieu a droite
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-		//			}
-		//			else if (row == 0 && col == 0) // le coin en haut gauche
-		//			{
-		//				if (tabrand[row][col - 1] == 'B')// case au millieu a droite
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row + 1][col] == 'B')// case en bas au milieu
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row + 1][col + 1] == 'B')// case en bas a droite
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-		//			}
-		//			else if (row == 0 && col == width - 1) // le coin en haut a droite 
-		//			{
-		//				if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row + 1][col] == 'B')// case en bas au milieu
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row + 1][col - 1] == 'B')// case en bas a gauche 
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-		//			}
-		//			else if (row == height - 1 && col == 0) // le coin en bas a gauche
-		//			{
-		//				if (tabrand[row - 1][col] == 'B')//case en haut au milieu
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row - 1][col + 1] == 'B')// case en haut a droite
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row][col - 1] == 'B')// case au millieu a droite
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-		//			}
-		//			else if (row == height - 1 && col == width - 1) // le coin en bas a droite
-		//			{
-		//				if (tabrand[row - 1][col] == 'B')//case en haut au milieu
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row - 1][col - 1] == 'B')// case en hat a gauche
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-		//			}
-		//			else if (row == 0 && col != 0 && col != width - 1) //en haut 
-		//			{
-		//				if (tabrand[row + 1][col + 1] == 'B')// case en bas a droite
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row + 1][col] == 'B')// case en bas au milieu
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row + 1][col - 1] == 'B')// case en bas a gauche 
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row][col - 1] == 'B')// case au millieu a droite
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-		//			}
-		//			else if (row == height - 1 && col != 0 && col != width - 1) //en bas
-		//			{
-		//				if (tabrand[row - 1][col - 1] == 'B')// case en hat a gauche
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row - 1][col] == 'B')//case en haut au milieu
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row - 1][col + 1] == 'B')// case en haut a droite
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row][col - 1] == 'B')// case au millieu a droite
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-		//			}
-		//			else if (col == 0 && row != 0 && row != height - 1) // a gauche
-		//			{
-		//				if (tabrand[row - 1][col] == 'B')//case en haut au milieu
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row - 1][col + 1] == 'B')// case en haut a droite
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row + 1][col + 1] == 'B')// case en bas a droite
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row + 1][col] == 'B')// case en bas au milieu
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row][col - 1] == 'B')// case au millieu a droite
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-		//			}
-		//			else if (col == width - 1 && row != 0 && row != height - 1) // a droite
-		//			{
-		//				if (tabrand[row - 1][col - 1] == 'B')// case en hat a gauche
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row - 1][col] == 'B')//case en haut au milieu
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row + 1][col] == 'B')// case en bas au milieu
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row + 1][col - 1] == 'B')// case en bas a gauche 
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-
-		//				if (tabrand[row][col + 1] == 'B')// case au millieu a gauche 
-		//					//tabrand[row][col]++;
-		//					tabrand[row][col] = tabrand[row][col] + 1;
-		//			}
-		//		}
-
-		//	}
-
-
-
-
-
-
-
-		/*for (int row = 0; row < height; ++row)
-		{
-			for (int col = 0; col< width; ++col)
-			{
-				std::cout << tabrand[row][col] << " ";
-
-
-			}
-			std::cout << std::endl;
-		}*/
+		
 	}
 	void incrementSurroundingCase(int bombrow, int bombcol)
 	{
-		for (int row = bombrow - 1; row <= bombrow+1; ++row)
-			for(int col=bombcol- 1 ; col <= bombcol+1; ++col)
+		//increment the numbers around the bomb
+		for (int row = bombrow - 1; row <= bombrow + 1; ++row)
+			for (int col = bombcol - 1; col <= bombcol + 1; ++col)
 				if (row >= 0 && row < height && col >= 0 && col < width && tabrand[row][col] != 'B')
 				{
 					tabrand[row][col]++;
 				}
 
-		
+
 	}
 
 
 	char whatisthecharhide(int row, int col)
 	{
-
-
-
-
-
-
 		if (tabrand[row][col] == 'B')
 		{
 			hashitabomb();
@@ -362,18 +154,12 @@ struct Grid
 			return tabrand[row][col];
 
 		}
-
-
-
-
-
-
-
 	}
 
 
 	void create(int width_, int height_)
 	{
+		//create the visible grid 
 		width = width_;
 		height = height_;
 		values = new State * [height];
@@ -389,6 +175,7 @@ struct Grid
 		std::cout << "   ";
 		for (int col = 0; col < width; ++col)
 		{
+			//code for spaces between line numbers
 			std::string num_col = std::to_string(col + 1);
 			std::cout << std::string(3 - num_col.length(), ' ') << num_col;
 		}
@@ -396,8 +183,10 @@ struct Grid
 
 		for (int row = 0; row < height; ++row)
 		{
+			//code for spaces between column numbers
 			std::string num_row = std::to_string(row + 1);
 			std::cout << std::string(3 - num_row.length(), ' ') << num_row;
+
 			for (int col = 0; col < width; ++col)
 			{
 				if (values[row][col] == hide)
@@ -411,6 +200,7 @@ struct Grid
 
 				else if (values[row][col] == flag)
 					std::cout << "[" << "<" << "]";
+				//in case of error
 				else
 					std::cout << "[" << "z" << "]";
 			}
@@ -418,18 +208,18 @@ struct Grid
 
 		}
 
-		int hiddenCells = 0;
-
+		//Count the number box revealed for Win
+		int RevealCell = 0;
 		for (int row = 0; row < height; ++row)
 			for (int col = 0; col < width; ++col)
 			{
 
 				if (values[row][col] == reveal)
 				{
-					++hiddenCells;
+					++RevealCell;
 				}
 			}
-		if (hiddenCells == (height * width) -bomb)
+		if (RevealCell == (height * width) - bomb)
 			haswinn();
 	}
 
@@ -443,7 +233,7 @@ struct Grid
 
 		std::cout << "width : ";
 		std::cin >> widthtemp;
-
+		//if invalid position
 		if (heighttemp > height || widthtemp > width)
 		{
 			do
@@ -455,14 +245,16 @@ struct Grid
 				std::cin >> widthtemp;
 			} while (heighttemp > height || widthtemp > width);
 		}
+
+
 		int choice = 0;
 		std::cout << "which action  1: flag / 2 reveal : ";
 		std::cin >> choice;
-
+		
 		State** newValues = new State * [height];
 		for (int row = 0; row < height; ++row)
 			newValues[row] = new State[width];
-
+		
 		switch (choice)
 		{
 		case (1):
