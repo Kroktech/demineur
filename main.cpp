@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <string>
 #include <cstdlib> 
@@ -28,22 +29,16 @@ struct Grid
 
 	void initiate()
 	{
-
-
 		std::cout << "choose the width : ";
 		std::cin >> width;
 		std::cout << std::endl;
-
 
 		std::cout << "choose the height : ";
 		std::cin >> height;
 		std::cout << std::endl;
 
-		
-		
-		
 		//if grid too small
-		if (width < 3 || width < 3)
+		if (width < 3 || height < 3)
 		{
 			do
 			{
@@ -57,27 +52,45 @@ struct Grid
 				std::cout << "choose the height : ";
 				std::cin >> height;
 				std::cout << std::endl;
-			} while (width < 3 || width < 3);
+			} while (width < 3 || height < 3);
 		}
 		std::cout << "choose the number of bomb : ";
 		std::cin >> bomb;
 		std::cout << std::endl;
 		// if too much bomb
-		if (bomb > (20 * width * height) / 100)
+		if (bomb > (25 * width * height) / 100)
 			do
 			{
-				std::cout << "choose a valid number of bomb under 20% of case";
+				std::cout << "choose a valid number of bomb under 25% of case";
 				std::cout << std::endl;
 				std::cout << "choose the number of bomb : ";
 				std::cin >> bomb;
 				std::cout << std::endl;
-			} while (bomb > (20 * width * height) / 100);
+			} while (bomb > (25 * width * height) / 100);
 
 		//create the 2 grids 
 		create(width, height);
 		tableaualéatoire();
 
 	}
+	void floodfill(State** newValues, int row, int col) {
+		//carefull of limits
+		if (row < 0 || row >= height || col < 0 || col >= width || newValues[row][col] == reveal)
+			return;
+
+
+		newValues[row][col] = reveal; // reveal the Cell
+
+
+		if (tabrand[row][col] == '0')
+			for (int i = -1; i <= 1; ++i)
+				for (int j = -1; j <= 1; ++j)
+					floodfill(newValues, row + i, col + j);
+		//recursive
+
+
+	}
+
 
 	void destroy()
 	{
@@ -126,7 +139,7 @@ struct Grid
 				incrementSurroundingCase(row, col);
 			}
 		}
-		
+
 	}
 	void incrementSurroundingCase(int bombrow, int bombcol)
 	{
@@ -194,7 +207,11 @@ struct Grid
 
 				else if (values[row][col] == reveal)
 				{
-					std::cout << "[" << whatisthecharhide(row, col) << "]";
+					if (whatisthecharhide(row, col) == '0')
+						std::cout << "[ ]";
+
+					else
+						std::cout << "[" << whatisthecharhide(row, col) << "]";
 
 				}
 
@@ -250,52 +267,41 @@ struct Grid
 		int choice = 0;
 		std::cout << "which action  1: flag / 2 reveal : ";
 		std::cin >> choice;
-		
+		//update the user grid
 		State** newValues = new State * [height];
 		for (int row = 0; row < height; ++row)
 			newValues[row] = new State[width];
-		
+		for (int row = 0; row < height; ++row)
+		{
+			for (int col = 0; col < width; ++col)
+			{
+				newValues[row][col] = values[row][col];
+			}
+		}
+
 		switch (choice)
 		{
 		case (1):
 
 
-			for (int row = 0; row < height; ++row)
-			{
-				for (int col = 0; col < width; ++col)
-				{
-					newValues[row][col] = values[row][col];
-
-
-
-
-				}
-			}
+			//add Flag
 			newValues[heighttemp - 1][widthtemp - 1] = flag;
 
 			destroy();
 			values = newValues;
 			break;
 		case (2):
-
-
-			for (int row = 0; row < height; ++row)
-			{
-				for (int col = 0; col < width; ++col)
-				{
-					newValues[row][col] = values[row][col];
-
-
-
-
-				}
+			if (tabrand[heighttemp - 1][widthtemp - 1] == '0') {
+				floodfill(newValues, heighttemp - 1, widthtemp - 1);
 			}
-			newValues[heighttemp - 1][widthtemp - 1] = reveal;
+			else 
+				newValues[heighttemp - 1][widthtemp - 1] = reveal;
 
 			destroy();
 			values = newValues;
 			break;
 		default:
+			// in case of wrong choice
 			std::cout << "error" << std::endl;
 			break;
 		}
@@ -315,7 +321,7 @@ struct Grid
 int main()
 {
 
-	srand(static_cast<unsigned int>(time(0)));
+	srand(time(0));
 
 	Grid grid;
 
