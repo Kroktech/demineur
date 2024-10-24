@@ -6,144 +6,8 @@ bool badend = false;
 enum State
 {
 	hide,
-	newreveal,
-	oldreveal,
+	reveal,
 	flag
-
-};
-struct IntNode
-{
-	IntNode* CellNext;
-	IntNode* CellPrevious;
-	int rowValue;
-	int colValue;
-
-	IntNode() : CellNext(nullptr), CellPrevious(nullptr), rowValue(0), colValue(0)
-	{
-	}
-
-	
-};
-void pushfront(IntNode* FirstNode, IntNode* NewFirstNode)
-{
-	NewFirstNode->CellPrevious = nullptr;
-	NewFirstNode->CellNext = FirstNode;
-	FirstNode->CellPrevious = NewFirstNode;
-}
-void pushback(IntNode* LastNode, IntNode* NewLastNode)
-{
-	NewLastNode->CellNext = nullptr;
-	NewLastNode->CellPrevious = LastNode;
-	LastNode->CellNext = NewLastNode;
-}
-
-
-struct IntList
-{
-	IntNode* CellFirstNode;
-	IntNode* CellLastNode;
-	IntList() : CellFirstNode(nullptr), CellLastNode(nullptr)
-	{}
-
-	bool isEmpty()
-	{
-		return CellFirstNode == nullptr;
-	}
-	~IntList()
-	{
-		
-		while (!isEmpty())
-			popFront();
-	}
-
-
-	void pushBack(int row,int col)
-	{
-		IntNode* NewLastNode = new IntNode;
-		NewLastNode->rowValue = row;
-		NewLastNode->colValue = col;
-		if (isEmpty())
-		{
-			//  Warning when list is empty adding an element at the end
-			//  does modify the prime element pointer.
-			CellFirstNode = NewLastNode;
-		}
-		else
-		{
-			::pushback(CellLastNode, NewLastNode);
-		}
-		CellLastNode = NewLastNode;
-	}
-
-	void pushFront(int row, int col)
-	{
-		IntNode* NewFirstNode = new IntNode;
-		NewFirstNode->rowValue = row;
-		NewFirstNode->colValue = col;
-		if (isEmpty())
-		{
-			//  Warning when list is empty adding an element at the beginning
-			//  does modify the last element pointer.
-			CellLastNode = NewFirstNode;
-		}
-		else
-		{
-			::pushfront(CellFirstNode, NewFirstNode);
-		}
-		CellFirstNode = NewFirstNode;
-	}
-
-	int popBack()
-	{
-		int row = CellLastNode->rowValue;
-		int col = CellLastNode->colValue;
-		IntNode* PoppedNode = CellLastNode;
-		IntNode* NewLastNode = CellLastNode->CellPrevious;
-
-		if (NewLastNode == nullptr)
-			CellFirstNode = nullptr;
-		else
-			NewLastNode->CellNext = nullptr;
-
-		CellLastNode = NewLastNode;
-
-		delete PoppedNode;
-		PoppedNode = nullptr;
-		return row, col;
-	}
-
-	int popFront()
-	{
-		int row = CellFirstNode->rowValue;
-		int col = CellFirstNode->colValue;
-		IntNode* PoppedNode = CellFirstNode;
-		IntNode* NewFirstNode = CellFirstNode->CellNext;
-
-		if (NewFirstNode == nullptr)
-			CellLastNode = nullptr;
-		else
-			NewFirstNode->CellPrevious = nullptr;
-
-		CellFirstNode = NewFirstNode;
-
-		delete PoppedNode;
-		PoppedNode = nullptr;
-		return row,col;
-	}
-
-	bool contains(int row, int col)
-	{
-		IntNode* CurrentNode = CellFirstNode;
-		while (CurrentNode != nullptr)
-		{
-			if (CurrentNode->rowValue == row && CurrentNode->colValue == col)
-				return true;
-
-			CurrentNode = CurrentNode->CellNext;
-		}
-
-		return false;
-	}
 
 };
 struct Grid
@@ -175,23 +39,15 @@ struct Grid
 		std::cin >> height;
 		std::cout << std::endl;
 
-		std::cout << "choose the number of bomb : ";
-		std::cin >> bomb;
-		std::cout << std::endl;
-		if (bomb > (20 * width * height) / 100)
-			do
-			{
-				std::cout << "choose a valid number of bomb under 20% of case";
-				std::cout << std::endl;
-				std::cout << "choose the number of bomb : ";
-				std::cin >> bomb;
-				std::cout << std::endl;
-			} while (bomb > (20 * width * height) / 100);
-		if (width < 2 || width < 2)
+
+
+
+		//if grid too small
+		if (width < 3 || height < 3)
 		{
 			do
 			{
-				std::cout << "invalid size enter a size greater than 5 ";
+				std::cout << "invalid size enter a size greater than 3 ";
 				std::cout << std::endl;
 				std::cout << "choose the width : ";
 				std::cin >> width;
@@ -201,13 +57,44 @@ struct Grid
 				std::cout << "choose the height : ";
 				std::cin >> height;
 				std::cout << std::endl;
-			} while (width < 2 || width < 2);
+			} while (width < 3 || height < 3);
 		}
+		std::cout << "choose the number of bomb : ";
+		std::cin >> bomb;
+		std::cout << std::endl;
+		// if too much bomb
+		if (bomb > (20 * width * height) / 100)
+			do
+			{
+				std::cout << "choose a valid number of bomb under 20% of case";
+				std::cout << std::endl;
+				std::cout << "choose the number of bomb : ";
+				std::cin >> bomb;
+				std::cout << std::endl;
+			} while (bomb > (20 * width * height) / 100);
 
+		//create the 2 grids 
 		create(width, height);
 		tableaualéatoire();
 
 	}
+	void floodfill(State** newValues, int row, int col) {
+		//carefull of limits
+		if (row < 0 || row >= height || col < 0 || col >= width|| newValues[row][col] == reveal) return;
+		
+
+		newValues[row][col] = reveal; // reveal the Cell
+
+		
+		if (tabrand[row][col] == '0') 
+			for (int i = -1; i <= 1; ++i) 
+				for (int j = -1; j <= 1; ++j) 
+					floodfill(newValues, row + i, col + j);
+				
+			
+		
+	}
+
 
 	void destroy()
 	{
@@ -233,14 +120,14 @@ struct Grid
 
 
 		tabrand = new char* [height];
-		// creer une grille
+		// create the hiden grid
 		for (int row = 0; row < height; row++)
 			tabrand[row] = new char[width];
 
 		for (int row = 0; row < height; ++row)
 			for (int col = 0; col < width; ++col)
 				tabrand[row][col] = '0';
-		// gerer les bomb
+		// place the numbers and bombs
 		int bombPlaced = 0;
 		while (bombPlaced < bomb)
 		{
@@ -256,10 +143,11 @@ struct Grid
 				incrementSurroundingCase(row, col);
 			}
 		}
-		
+
 	}
 	void incrementSurroundingCase(int bombrow, int bombcol)
 	{
+		//increment the numbers around the bomb
 		for (int row = bombrow - 1; row <= bombrow + 1; ++row)
 			for (int col = bombcol - 1; col <= bombcol + 1; ++col)
 				if (row >= 0 && row < height && col >= 0 && col < width && tabrand[row][col] != 'B')
@@ -273,12 +161,6 @@ struct Grid
 
 	char whatisthecharhide(int row, int col)
 	{
-
-
-
-
-
-
 		if (tabrand[row][col] == 'B')
 		{
 			hashitabomb();
@@ -289,18 +171,12 @@ struct Grid
 			return tabrand[row][col];
 
 		}
-
-
-
-
-
-
-
 	}
 
 
 	void create(int width_, int height_)
 	{
+		//create the visible grid 
 		width = width_;
 		height = height_;
 		values = new State * [height];
@@ -311,69 +187,12 @@ struct Grid
 			for (int col = 0; col < width; ++col)
 				values[row][col] = hide;
 	}
-	void floodfillimpro(int row0, int col0)
-	{
-		/*IntList List;
-		List.pushBack(row0, col0);
-		while (!List.isEmpty())
-		{
-
-		}*/
-		IntList List;
-		List.pushBack(row0, col0);
-
-		while (!List.isEmpty())
-		{
-			// Pop the first node from the list
-			int row = List.CellFirstNode->rowValue;
-			int col = List.CellFirstNode->colValue;
-			List.popFront();  // Remove the node after processing
-
-			// If the cell is already revealed, skip it
-			if (values[row][col] != hide)
-				continue;
-
-			// Reveal the cell
-			values[row][col] = newreveal;
-
-			// If the cell is '0', we need to check its neighbors
-			if (tabrand[row][col] == '0')
-			{
-				// Iterate through the neighboring cells
-				for (int r = row - 1; r <= row + 1; ++r)
-				{
-					for (int c = col - 1; c <= col + 1; ++c)
-					{
-						// Check if the neighbor is within bounds
-						if (r >= 0 && r < height && c >= 0 && c < width)
-						{
-							// If it's still hidden, add it to the list for further processing
-							if (values[r][c] == hide)
-							{
-								List.pushBack(r, c);
-							}
-						}
-					}
-				}
-			}
-		}
-		for (int row = 0; row < height; ++row)
-			for (int col = 0; col < width; ++col)
-			{
-				if (List.contains(row, col))
-					values[row][col] == newreveal;
-			}
-		iterate();
-		show();
-
-	}
 	void show()
 	{
-		int row0 = -1;
-		int col0 = -1;
 		std::cout << "   ";
 		for (int col = 0; col < width; ++col)
 		{
+			//code for spaces between line numbers
 			std::string num_col = std::to_string(col + 1);
 			std::cout << std::string(3 - num_col.length(), ' ') << num_col;
 		}
@@ -381,51 +200,43 @@ struct Grid
 
 		for (int row = 0; row < height; ++row)
 		{
+			//code for spaces between column numbers
 			std::string num_row = std::to_string(row + 1);
 			std::cout << std::string(3 - num_row.length(), ' ') << num_row;
+
 			for (int col = 0; col < width; ++col)
 			{
 				if (values[row][col] == hide)
 					std::cout << "[" << "-" << "]";
 
-				else if (values[row][col] == newreveal)
+				else if (values[row][col] == reveal)
 				{
 					std::cout << "[" << whatisthecharhide(row, col) << "]";
-					if (whatisthecharhide(row, col) == '0')
-					{
-						 row0 = row;
-						 col0 = col;
-					}
+
 				}
 
 				else if (values[row][col] == flag)
 					std::cout << "[" << "<" << "]";
-				else if (values[row][col] == oldreveal)
-				{
-					std::cout << "[" << whatisthecharhide(row, col) << "]";
-					
-				}
+				//in case of error
 				else
 					std::cout << "[" << "z" << "]";
 			}
 			std::cout << std::endl;
 
 		}
-		if (row0 != -1 || col0 != -1)
-			floodfillimpro(row0 ,col0);
 
-		int hiddenCells = 0;
-
+		//Count the number box revealed for Win
+		int RevealCell = 0;
 		for (int row = 0; row < height; ++row)
 			for (int col = 0; col < width; ++col)
 			{
 
-				if (values[row][col] == oldreveal)
+				if (values[row][col] == reveal)
 				{
-					++hiddenCells;
+					++RevealCell;
 				}
 			}
-		if (hiddenCells == (height * width) - bomb)
+		if (RevealCell == (height * width) - bomb)
 			haswinn();
 	}
 
@@ -439,7 +250,7 @@ struct Grid
 
 		std::cout << "width : ";
 		std::cin >> widthtemp;
-
+		//if invalid position
 		if (heighttemp > height || widthtemp > width)
 		{
 			do
@@ -451,6 +262,8 @@ struct Grid
 				std::cin >> widthtemp;
 			} while (heighttemp > height || widthtemp > width);
 		}
+
+
 		int choice = 0;
 		std::cout << "which action  1: flag / 2 reveal : ";
 		std::cin >> choice;
@@ -458,45 +271,39 @@ struct Grid
 		State** newValues = new State * [height];
 		for (int row = 0; row < height; ++row)
 			newValues[row] = new State[width];
+		for (int row = 0; row < height; ++row)
+		{
+			for (int col = 0; col < width; ++col)
+			{
+				newValues[row][col] = values[row][col];
+			}
+		}
 
 		switch (choice)
 		{
 		case (1):
 
 
-			for (int row = 0; row < height; ++row)
-			{
-				for (int col = 0; col < width; ++col)
-				{
-					newValues[row][col] = values[row][col];
-					if (newValues[row][col] == newreveal)
-						newValues[row][col] = oldreveal;
-
-
-
-				}
-			}
+			
 			newValues[heighttemp - 1][widthtemp - 1] = flag;
 
 			destroy();
 			values = newValues;
 			break;
 		case (2):
-
-
-			for (int row = 0; row < height; ++row)
-			{
-				for (int col = 0; col < width; ++col)
-				{
-					newValues[row][col] = values[row][col];
-					if (newValues[row][col] == newreveal)
-						newValues[row][col] = oldreveal;
-
-
-
-				}
+			if (tabrand[heighttemp - 1][widthtemp - 1] == '0') {
+				floodfill(newValues, heighttemp - 1, widthtemp - 1); 
 			}
-			newValues[heighttemp - 1][widthtemp - 1] = newreveal;
+			else {
+				newValues[heighttemp - 1][widthtemp - 1] = reveal;
+				
+					
+			}
+
+			
+			
+			
+
 
 			destroy();
 			values = newValues;
