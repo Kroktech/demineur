@@ -80,7 +80,8 @@ struct Grid
 	}
 	void floodfill(State** newValues, int row, int col) {
 		//carefull of limits
-		if (row < 0 || row >= height || col < 0 || col >= width || newValues[row][col] == reveal) return;
+		if (row < 0 || row >= height || col < 0 || col >= width || newValues[row][col] == reveal) 
+			return;
 
 
 		newValues[row][col] = reveal; // reveal the Cell
