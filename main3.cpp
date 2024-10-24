@@ -80,19 +80,19 @@ struct Grid
 	}
 	void floodfill(State** newValues, int row, int col) {
 		//carefull of limits
-		if (row < 0 || row >= height || col < 0 || col >= width|| newValues[row][col] == reveal) return;
-		
+		if (row < 0 || row >= height || col < 0 || col >= width || newValues[row][col] == reveal) return;
+
 
 		newValues[row][col] = reveal; // reveal the Cell
 
-		
-		if (tabrand[row][col] == '0') 
-			for (int i = -1; i <= 1; ++i) 
-				for (int j = -1; j <= 1; ++j) 
+
+		if (tabrand[row][col] == '0')
+			for (int i = -1; i <= 1; ++i)
+				for (int j = -1; j <= 1; ++j)
 					floodfill(newValues, row + i, col + j);
-				
-			
-		
+
+
+
 	}
 
 
@@ -211,7 +211,11 @@ struct Grid
 
 				else if (values[row][col] == reveal)
 				{
-					std::cout << "[" << whatisthecharhide(row, col) << "]";
+					if (whatisthecharhide(row, col) == '0')
+						std::cout  << "[ ]";
+
+					else 
+						std::cout << "[" << whatisthecharhide(row, col) << "]";
 
 				}
 
@@ -284,7 +288,7 @@ struct Grid
 		case (1):
 
 
-			
+
 			newValues[heighttemp - 1][widthtemp - 1] = flag;
 
 			destroy();
@@ -292,17 +296,17 @@ struct Grid
 			break;
 		case (2):
 			if (tabrand[heighttemp - 1][widthtemp - 1] == '0') {
-				floodfill(newValues, heighttemp - 1, widthtemp - 1); 
+				floodfill(newValues, heighttemp - 1, widthtemp - 1);
 			}
 			else {
 				newValues[heighttemp - 1][widthtemp - 1] = reveal;
-				
-					
+
+
 			}
 
-			
-			
-			
+
+
+
 
 
 			destroy();
@@ -328,7 +332,7 @@ struct Grid
 int main()
 {
 
-	srand(static_cast<unsigned int>(time(0)));
+	srand(time(0));
 
 	Grid grid;
 
