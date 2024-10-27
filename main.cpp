@@ -266,7 +266,7 @@ struct Grid
 
 
 		int choice = 0;
-		std::cout << "quel action(1 ou 2)  1 = poser un drapeau 2 = aficher une case : ";
+		std::cout << "quel action(1 ou 2)  1 = poser un drapeau 2 = afficher une case : ";
 		std::cin >> choice;
 		//update the user grid
 		State** newValues = new State * [height];
