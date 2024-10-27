@@ -29,12 +29,12 @@ struct Grid
 
 	void initiate()
 	{
-		std::cout << "choose the width : ";
-		std::cin >> width;
+		std::cout << "taille de grille hauteur (ex: 10): ";
+		std::cin >>height ;
 		std::cout << std::endl;
 
-		std::cout << "choose the height : ";
-		std::cin >> height;
+		std::cout << "taille de grille longeur (ex: 10) : ";
+		std::cin >> width;
 		std::cout << std::endl;
 
 		//if grid too small
@@ -42,19 +42,19 @@ struct Grid
 		{
 			do
 			{
-				std::cout << "invalid size enter a size greater than 3 ";
+				std::cout << "taille trop petite :  taille > 3 ";
 				std::cout << std::endl;
-				std::cout << "choose the width : ";
-				std::cin >> width;
-				std::cout << std::endl;
-
-
-				std::cout << "choose the height : ";
+				std::cout << "taille de grille hauteur (ex: 10):  ";
 				std::cin >> height;
+				std::cout << std::endl;
+
+
+				std::cout << "taille de grille longeur (ex: 10) :";
+				std::cin >> width;
 				std::cout << std::endl;
 			} while (width < 3 || height < 3);
 		}
-		std::cout << "choose the number of bomb : ";
+		std::cout << "choisir le nombre de bombe ";
 		std::cin >> bomb;
 		std::cout << std::endl;
 		// if too much bomb
@@ -63,14 +63,14 @@ struct Grid
 			{
 				std::cout << "choose a valid number of bomb under 25% of case";
 				std::cout << std::endl;
-				std::cout << "choose the number of bomb : ";
+				std::cout << "choisir le nombre de bombe ";
 				std::cin >> bomb;
 				std::cout << std::endl;
 			} while (bomb > (25 * width * height) / 100);
 
 		//create the 2 grids 
 		create(width, height);
-		tableaualéatoire();
+		tableaualeatoire();
 
 	}
 	void floodfill(State** newValues, int row, int col) {
@@ -109,7 +109,7 @@ struct Grid
 	int height;
 	char** tabrand;
 	int bomb;
-	void tableaualéatoire()
+	void tableaualeatoire()
 	{
 
 
@@ -243,12 +243,13 @@ struct Grid
 
 	void iterate()
 	{
+
 		int heighttemp = 0;
 		int widthtemp = 0;
-		std::cout << "height : ";
+		std::cout << "choisit une hauteur : ";
 		std::cin >> heighttemp;
 
-		std::cout << "width : ";
+		std::cout << "choisit une longeur : ";
 		std::cin >> widthtemp;
 		//if invalid position
 		if (heighttemp > height || widthtemp > width)
@@ -256,16 +257,16 @@ struct Grid
 			do
 			{
 				std::cout << "Invalid position please try again" << std::endl;
-				std::cout << "height : ";
+				std::cout << "choisit une hauteur : ";
 				std::cin >> heighttemp;
-				std::cout << "width : ";
+				std::cout << "choisit une longeur : ";
 				std::cin >> widthtemp;
 			} while (heighttemp > height || widthtemp > width);
 		}
 
 
 		int choice = 0;
-		std::cout << "which action  1: flag / 2 reveal : ";
+		std::cout << "quel action(1 ou 2)  1 = poser un drapeau 2 = aficher une case : ";
 		std::cin >> choice;
 		//update the user grid
 		State** newValues = new State * [height];
@@ -294,7 +295,7 @@ struct Grid
 			if (tabrand[heighttemp - 1][widthtemp - 1] == '0') {
 				floodfill(newValues, heighttemp - 1, widthtemp - 1);
 			}
-			else 
+			else
 				newValues[heighttemp - 1][widthtemp - 1] = reveal;
 
 			destroy();
